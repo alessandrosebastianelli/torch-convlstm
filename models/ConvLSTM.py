@@ -163,27 +163,27 @@ class EncoderDecoderConvLSTM(pl.LightningModule):
         # Logging info
         self.log('train_loss', loss, on_epoch=True, prog_bar=True)
 
-        if batch_idx <=10 :
-            bsize = inputs.shape[0]
+        #if batch_idx <=10 :
+        #    bsize = inputs.shape[0]
         
-            fig, axes = plt.subplots(nrows=(bsize//2)*2, ncols=self.future_seq, figsize=(self.future_seq*4, (bsize//2)*2*4))
+        #    fig, axes = plt.subplots(nrows=(bsize//2)*2, ncols=self.future_seq, figsize=(self.future_seq*4, (bsize//2)*2*4))
             
-            for b in range(bsize//2):
-                for t in range(self.future_seq):
-                    lbl = labels.cpu().detach().numpy()[b,0,t,...]
-                    pre = outputs.cpu().detach().numpy()[b,0,t,...]
+        #    for b in range(bsize//2):
+        #        for t in range(self.future_seq):
+        #            lbl = labels.cpu().detach().numpy()[b,0,t,...]
+        #            pre = outputs.cpu().detach().numpy()[b,0,t,...]
 
-                    lbl = (lbl + 1)/2
-                    pre = (pre + 1)/2
+        #            lbl = (lbl + 1)/2
+        #            pre = (pre + 1)/2
                 
-                    axes[2*b, t].imshow(lbl)
-                    axes[2*b + 1, t].imshow(pre)
-                    axes[2*b, t].axis(False)
-                    axes[2*b + 1, t].axis(False)
+        #            axes[2*b, t].imshow(lbl)
+        #            axes[2*b + 1, t].imshow(pre)
+        #            axes[2*b, t].axis(False)
+        #            axes[2*b + 1, t].axis(False)
             
-            plt.tight_layout()
-            self.logger.experiment.add_figure(f'Train-Prediction-{batch_idx}', plt.gcf(), global_step=self.current_epoch)
-            plt.close()
+        #    plt.tight_layout()
+        #    self.logger.experiment.add_figure(f'Train-Prediction-{batch_idx}', plt.gcf(), global_step=self.current_epoch)
+        #    plt.close()
     
         return loss
 
@@ -194,7 +194,7 @@ class EncoderDecoderConvLSTM(pl.LightningModule):
         # Logging info
         self.log('valid_loss', loss, on_epoch=True, prog_bar=True)
 
-        if batch_idx <=10 :
+        if batch_idx <=3 :
             bsize = inputs.shape[0]
         
             fig, axes = plt.subplots(nrows=(bsize//2)*2, ncols=self.future_seq, figsize=(self.future_seq*4, (bsize//2)*2*4))
@@ -225,27 +225,27 @@ class EncoderDecoderConvLSTM(pl.LightningModule):
         # Logging info
         self.log('test_loss', loss, on_epoch=True, prog_bar=True)
 
-        if batch_idx <=10 :
-            bsize = inputs.shape[0]
+    
+        bsize = inputs.shape[0]
+    
+        fig, axes = plt.subplots(nrows=(bsize//2)*2, ncols=self.future_seq, figsize=(self.future_seq*4, (bsize//2)*2*4))
         
-            fig, axes = plt.subplots(nrows=(bsize//2)*2, ncols=self.future_seq, figsize=(self.future_seq*4, (bsize//2)*2*4))
-            
-            for b in range(bsize//2):
-                for t in range(self.future_seq):
-                    lbl = labels.cpu().detach().numpy()[b,0,t,...]
-                    pre = outputs.cpu().detach().numpy()[b,0,t,...]
+        for b in range(bsize//2):
+            for t in range(self.future_seq):
+                lbl = labels.cpu().detach().numpy()[b,0,t,...]
+                pre = outputs.cpu().detach().numpy()[b,0,t,...]
 
-                    lbl = (lbl + 1)/2
-                    pre = (pre + 1)/2
-                
-                    axes[2*b, t].imshow(lbl)
-                    axes[2*b + 1, t].imshow(pre)
-                    axes[2*b, t].axis(False)
-                    axes[2*b + 1, t].axis(False)
+                lbl = (lbl + 1)/2
+                pre = (pre + 1)/2
             
-            plt.tight_layout()
-            self.logger.experiment.add_figure(f'Test-Prediction-{batch_idx}', plt.gcf(), global_step=self.current_epoch)
-            plt.close()
+                axes[2*b, t].imshow(lbl)
+                axes[2*b + 1, t].imshow(pre)
+                axes[2*b, t].axis(False)
+                axes[2*b + 1, t].axis(False)
+        
+        plt.tight_layout()
+        self.logger.experiment.add_figure(f'Test-Prediction-{batch_idx}', plt.gcf(), global_step=self.current_epoch)
+        plt.close()
     
         return loss
     

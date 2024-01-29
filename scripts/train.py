@@ -11,12 +11,6 @@ sys.path += ['.', './']
 from models.ConvLSTM import EncoderDecoderConvLSTM
 from dataio.loader import SimulatedCloudsDataset
 
-from rasterio import logging
-log = logging.getLogger()
-log.setLevel(logging.ERROR)
-
-
-
 if __name__ == "__main__":
     torch.set_float32_matmul_precision('high')
 
@@ -38,7 +32,7 @@ if __name__ == "__main__":
     model = EncoderDecoderConvLSTM(nf=32, in_chan=1, future_seq=future_seq)
 
     # Instantiate Trainer
-    trainer = pl.Trainer(max_epochs=50, callbacks=[checkpoint_callback], logger=tb_logger, accelerator='cpu')
+    trainer = pl.Trainer(max_epochs=50, callbacks=[checkpoint_callback], logger=tb_logger)
 
     # Train the model
     trainer.fit(model, data_module)

@@ -17,10 +17,10 @@ class CloudSimulator(Dataset):
 
     def __getitem__(self, idx):
         OBSERVATION_WINDOWN_LENGHT  = self.in_lenght + self.ou_lenght
-        IMAGE_SIZE                  = (64,64)
-        CLOUD_SIZE_RANGE            = (int(IMAGE_SIZE[0]*5/100),int(IMAGE_SIZE[0]*40/100),int(IMAGE_SIZE[0]*10/100),int(IMAGE_SIZE[0]*40/100))
+        IMAGE_SIZE                  = (256,256)
+        CLOUD_SIZE_RANGE            = (int(IMAGE_SIZE[0]*20/100),int(IMAGE_SIZE[0]*90/100),int(IMAGE_SIZE[1]*20/100),int(IMAGE_SIZE[1]*90/100))
         CLOUD_STARTING_POINTS_RANGE = (0,int(IMAGE_SIZE[0]*45/100),0,int(IMAGE_SIZE[1]*45/100))
-        CLOUD_VELOCITY_RANGE        = (1,int(IMAGE_SIZE[0]*2/100),1,int(IMAGE_SIZE[1]*2/100))
+        CLOUD_VELOCITY_RANGE        = (1,int(IMAGE_SIZE[0]*10/100),1,int(IMAGE_SIZE[1]*10/100))
         CLOUD_DIRECTIONS            = (-1,1,-1,1)
 
         # Cloud size
