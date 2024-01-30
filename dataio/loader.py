@@ -17,10 +17,10 @@ class CloudSimulator(Dataset):
 
     def __getitem__(self, idx):
         OBSERVATION_WINDOWN_LENGHT  = self.in_lenght + self.ou_lenght
-        IMAGE_SIZE                  = (256,256)
-        CLOUD_SIZE_RANGE            = (int(IMAGE_SIZE[0]*20/100),int(IMAGE_SIZE[0]*90/100),int(IMAGE_SIZE[1]*20/100),int(IMAGE_SIZE[1]*90/100))
-        CLOUD_STARTING_POINTS_RANGE = (0,int(IMAGE_SIZE[0]*45/100),0,int(IMAGE_SIZE[1]*45/100))
-        CLOUD_VELOCITY_RANGE        = (1,int(IMAGE_SIZE[0]*10/100),1,int(IMAGE_SIZE[1]*10/100))
+        IMAGE_SIZE                  = (128,128)
+        CLOUD_SIZE_RANGE            = (int(IMAGE_SIZE[0]*20/100),int(IMAGE_SIZE[0]*60/100),int(IMAGE_SIZE[1]*20/100),int(IMAGE_SIZE[1]*60/100))
+        CLOUD_STARTING_POINTS_RANGE = (0,int(IMAGE_SIZE[0]*20/100),0,int(IMAGE_SIZE[1]*20/100))
+        CLOUD_VELOCITY_RANGE        = (1,int(IMAGE_SIZE[0]*2.5/100),1,int(IMAGE_SIZE[1]*2.5/100))
         CLOUD_DIRECTIONS            = (-1,1,-1,1)
 
         # Cloud size
@@ -46,8 +46,7 @@ class CloudSimulator(Dataset):
             for xx in range(x, x+cw):
                 for yy in range(y, y+ch):
                     try:
-                        img[i, xx, yy] = 1
-                        
+                        img[i, xx, yy] = 1                        
                     except:
                         pass
 
