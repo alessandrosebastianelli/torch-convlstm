@@ -20,13 +20,10 @@ class CloudSimulator(Dataset):
         self.CLOUD_VELOCITY_RANGE        = (1,int(self.IMAGE_SIZE[0]*2.5/100),1,int(self.IMAGE_SIZE[1]*2.5/100))
         self.CLOUD_DIRECTIONS            = (-1,1,-1,1)
 
-
-        self.cws = np.arange(self.CLOUD_SIZE_RANGE[0], self.CLOUD_SIZE_RANGE[1])
-        self.chs = np.arange(self.CLOUD_SIZE_RANGE[2], self.CLOUD_SIZE_RANGE[3])
-
-        self.xs = np.arange(self.CLOUD_STARTING_POINTS_RANGE[0], self.CLOUD_STARTING_POINTS_RANGE[1])
-        self.ys = np.arange(self.CLOUD_STARTING_POINTS_RANGE[2], self.CLOUD_STARTING_POINTS_RANGE[3])
-
+        self.cws  = np.arange(self.CLOUD_SIZE_RANGE[0], self.CLOUD_SIZE_RANGE[1])
+        self.chs  = np.arange(self.CLOUD_SIZE_RANGE[2], self.CLOUD_SIZE_RANGE[3])
+        self.xs   = np.arange(self.CLOUD_STARTING_POINTS_RANGE[0], self.CLOUD_STARTING_POINTS_RANGE[1])
+        self.ys   = np.arange(self.CLOUD_STARTING_POINTS_RANGE[2], self.CLOUD_STARTING_POINTS_RANGE[3])
         self.cvxs = np.arange(self.CLOUD_VELOCITY_RANGE[0], self.CLOUD_VELOCITY_RANGE[1])
         self.cvys = np.arange(self.CLOUD_VELOCITY_RANGE[2], self.CLOUD_VELOCITY_RANGE[3])
 
@@ -101,3 +98,52 @@ class SimulatedCloudsDataset(pl.LightningDataModule):
 
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers, persistent_workers=True)
+
+
+class MovingMNIST(Dataset):
+    def __init__(self, in_lenght=10, ou_lenght=10, transform=None):
+        self.in_lenght = in_lenght
+        self.ou_lenght = ou_lenght
+        self.transform = transform
+
+        dataset   = np.load('datasets/mnist_test_seq.npy')
+        self.x_in = dataset[0:in_lenght, ...]
+        self.y_in = dataset[in_lenght:in_lenght+ou_lenght, ...]
+
+    def __len__(self):
+        return self.x_in.shape[1]
+
+    def __getitem__(self, idx):
+        
+        x = self.x_in[:, idx, ...]/255.0
+        y = self.y_in[:, idx, ...]/255.0
+
+        in_seq = x[:, None, ...]
+        in_seq = torch.tensor(in_seq).float()
+        
+        ou_seq = y[None, ...]
+        ou_seq = torch.tensor(ou_seq).float()
+
+        #print(ou_seq.shape, in_seq.shape)
+
+        return in_seq, ou_seq
+
+class MovingMNISTDataset(pl.LightningDataModule):
+    def __init__(self, batch_size=64, num_workers=9, in_lenght=10, ou_lenght=10):
+        super().__init__()
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.in_lenght = in_lenght
+        self.ou_lenght = ou_lenght
+
+    def setup(self, stage=None):
+        #transform = transforms.Compose([transforms.ToTensor()])
+        self.train_dataset = MovingMNIST(in_lenght=self.in_lenght, ou_lenght=self.ou_lenght)#, transform=transform)
+        self.valid_dataset = MovingMNIST(in_lenght=self.in_lenght, ou_lenght=self.ou_lenght)#, transform=transform)
+
+
+    def train_dataloader(self):
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers, persistent_workers=True)
+
+    def val_dataloader(self):
+        return DataLoader(self.valid_dataset, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers, persistent_workers=True)

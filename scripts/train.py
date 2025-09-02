@@ -10,15 +10,15 @@ sys.path += ['.', './']
 
 from models.ConvLSTM import EncoderDecoderConvLSTM
 from models.IrradianceNet import IrradianceNet
-from dataio.loader import SimulatedCloudsDataset
+from dataio.loader import SimulatedCloudsDataset, MovingMNISTDataset
 
 if __name__ == "__main__":
     torch.set_float32_matmul_precision('high')
     
-    input_seq  = 12
-    future_seq = 12
+    input_seq  = 15
+    future_seq = 5
 
-    data_module = SimulatedCloudsDataset(batch_size=12, num_workers=16, in_lenght=input_seq, ou_lenght=future_seq)
+    data_module = MovingMNISTDataset(batch_size=12, num_workers=16, in_lenght=input_seq, ou_lenght=future_seq) #SimulatedCloudsDataset(batch_size=12, num_workers=16, in_lenght=input_seq, ou_lenght=future_seq)
     tb_logger = pl.loggers.TensorBoardLogger(os.path.join('lightning_logs','convlstm'), name='EncoderDecoderConvLSTM')
 
     # Instantiate ModelCheckpoint callback
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     )
 
     # Instantiate LightningModule and DataModule
-    model = IrradianceNet(future_seq, 1, 128)
+    model = IrradianceNet(future_seq, 1, 64)
     
     #EncoderDecoderConvLSTM(nf=128, in_chan=1, future_seq=future_seq)
 
